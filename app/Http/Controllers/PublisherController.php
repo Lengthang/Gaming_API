@@ -31,7 +31,8 @@ class PublisherController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $publisher = Publisher::findOrFail($id);
+        return response()->json($publisher);
     }
 
     /**
@@ -39,7 +40,15 @@ class PublisherController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $publisher = Publisher::findOrFail($id);
+
+        // $request->validate([
+        //     'name' => 'required',
+        // ]);
+
+        $publisher->update($request->all());
+
+        return response()->json(['message' => 'Publisher updated successfully', 'data' => $publisher]);
     }
 
     /**
@@ -47,6 +56,9 @@ class PublisherController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $publisher = Publisher::findOrFail($id);
+        $publisher->delete();
+
+        return response()->json(['message' => 'Publisher deleted successfully']);
     }
 }

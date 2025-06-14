@@ -31,15 +31,25 @@ class PlatformController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $platform = Platform::findOrFail($id);
+        return response()->json($platform);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
-        //
+        $platform = Platform::findOrFail($id);
+
+        // $request->validate([
+        //     'name' => 'required',
+        // ]);
+
+        $platform->update($request->all());
+
+        return response()->json(['message' => 'Platform updated successfully', 'data' => $platform]);
     }
 
     /**
@@ -47,6 +57,9 @@ class PlatformController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $platform = Platform::findOrFail($id);
+        $platform->delete();
+
+        return response()->json(['message' => 'Platform deleted successfully']);
     }
 }

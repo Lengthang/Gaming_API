@@ -30,7 +30,8 @@ class DeveloperController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $developer = Developer::findOrFail($id);
+        return response()->json($developer);
     }
 
     /**
@@ -38,7 +39,15 @@ class DeveloperController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $developer = Developer::findOrFail($id);
+
+        // $request->validate([
+        //     'name' => 'required',
+        // ]);
+
+        $developer->update($request->all());
+
+        return response()->json(['message' => 'Developer updated successfully', 'data' => $developer]);
     }
 
     /**
@@ -46,6 +55,9 @@ class DeveloperController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $developer = Developer::findOrFail($id);
+        $developer->delete();
+
+        return response()->json(['message' => 'Developer deleted successfully']);
     }
 }
