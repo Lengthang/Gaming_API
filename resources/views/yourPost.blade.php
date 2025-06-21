@@ -47,10 +47,45 @@
             </div>
 
             
-            <h2 class="text-2xl font-semibold mb-6 pt-7">All Games</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-x-3 gap-y-6">
-                
+            
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-semibold mb-6 pt-7">Your Games</h2>
+                <a href="{{ url('/create') }}" class="bg-[#FFFFFF26] hover:bg-gray-700 text-white font-medium px-3 py-1 rounded-md h-fit">
+                    Create Games
+                </a>
             </div>
+
+            <div class="grid grid-cols-1 gap-6 md:w-[1152px]">
+                    <!-- Developer/Publisher/Platform Card -->
+                    <div class="bg-[#1A1D24] rounded-xl p-4 shadow hover:shadow-lg transition duration-300 grid grid-cols-5 gap-3">
+                        <div class="col-span-1">
+                            <img class="h-full object-cover rounded-lg" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3470190/39ac52ac4e76eba2145b6b7a127733516047ef23/header.jpg?t=1747745216" alt="">
+                        </div>
+                        <div class="col-span-4 ">
+                            <h3 class="text-xl font-semibold text-white mb-2">Epic Games</h3>
+                            <p class="text-gray-400 text-sm mb-3">Known for Fortnite and Unreal Engine. A leading AAA developer and publisher.</p>
+                            <div class="flex justify-between items-center text-sm text-gray-300">
+                                <span>USA</span>
+                                <a href="#" class="text-blue-400 hover:underline">edit game</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="bg-[#1A1D24] rounded-xl p-4 shadow hover:shadow-lg transition duration-300 grid grid-cols-5 gap-3">
+                        <div class="col-span-1">
+                            <img class="h-full object-cover rounded-lg" src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/3470190/39ac52ac4e76eba2145b6b7a127733516047ef23/header.jpg?t=1747745216" alt="">
+                        </div>
+                        <div class="col-span-4 ">
+                            <h3 class="text-xl font-semibold text-white mb-2">Epic Games</h3>
+                            <p class="text-gray-400 text-sm mb-3">Known for Fortnite and Unreal Engine. A leading AAA developer and publisher.</p>
+                            <div class="flex justify-between items-center text-sm text-gray-300">
+                                <span>USA</span>
+                                <a href="#" class="text-blue-400 hover:underline">edit game</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
         </div>            
     </div>
 </main>
@@ -95,40 +130,13 @@
 
 
 
-
-    <script>
-    fetch('http://127.0.0.1:8000/api/games')
-        .then(response => response.json())
-        .then(games => {
-        const container = document.querySelector('.grid');
-        container.innerHTML = ''; // clear placeholder content
-
-        games.forEach(game => {
-            const div = document.createElement('div');
-            div.className = 'w-[220.550px]';
-            div.innerHTML = `
-            <a href="/games/${game.id}">
-                <img class="rounded-lg h-[294.062px]" src="${game.poster}" alt="${game.title}">
-                <h1 class="text-xs text-[#FFFFFFA6] mt-2">Base Game</h1>
-                <h1 class="font-medium text-wrap">${game.title}</h1>
-            </a>
-        `;
-
-            container.appendChild(div);
-        });
-        })
-        .catch(err => console.error('Error loading games:', err));
-        
-    </script>
-
-    <script>
+<script>
         const yourPostUrl = "{{ session('token') ? url('/your-post') : route('register.page') }}";
 
         function handleYourPost() {
             window.location.href = yourPostUrl;
         }
     </script>
-
 
 
 

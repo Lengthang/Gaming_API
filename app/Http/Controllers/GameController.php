@@ -27,17 +27,41 @@ class GameController extends Controller
             'class' => 'required|string|max:255',
             'developer_id' => 'required|exists:developers,id',
             'publisher_id' => 'required|exists:publishers,id',
+            'description' => 'required|string',
+            'image' => 'required|string',
+            'poster' => 'required|string',
+            'price' => 'required|numeric',
+            'website' => 'nullable|string',
+            'section_titles' => 'array',
+            'section_titles.*' => 'nullable|string',
+            'section_descriptions' => 'array',
+            'section_descriptions.*' => 'nullable|string',
         ]);
 
+
         $game = Game::create($request->only([
-            'title', 'genre', 'rating', 'class', 'developer_id', 'publisher_id'
+            'title', 'genre', 'class', 'developer_id', 'publisher_id', 'description', 'image', 'poster', 'price', 'website'
         ]));
 
         if ($request->has('platform_ids')) {
             $game->platforms()->attach($request->platform_ids);
         }
 
-        return $game->load(['developer', 'publisher', 'platforms']);
+        // Save multiple sections
+        $sectionTitles = $request->input('section_titles', []);
+        $sectionDescs = $request->input('section_descriptions', []);
+
+        foreach ($sectionTitles as $i => $title) {
+            if ($title || ($sectionDescs[$i] ?? null)) {
+                $game->sections()->create([
+                    'title' => $title,
+                    'description' => $sectionDescs[$i] ?? '',
+                ]);
+            }
+        }
+
+        return $game->load(['developer', 'publisher', 'platforms', 'sections']);
+
     }
 
     /**
@@ -45,7 +69,7 @@ class GameController extends Controller
      */
     public function show(string $id)
     {
-        return Game::with(['developer', 'publisher', 'platforms'])->findOrFail($id);
+        return Game::with(['developer', 'publisher', 'platforms', 'sections'])->findOrFail($id);
     }
 
     /**
@@ -54,15 +78,49 @@ class GameController extends Controller
     public function update(Request $request, string $id)
     {
         $game = Game::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'genre' => 'required|string|max:255',
+            'class' => 'required|string|max:255',
+            'developer_id' => 'required|exists:developers,id',
+            'publisher_id' => 'required|exists:publishers,id',
+            'description' => 'required|string',
+            'image' => 'required|string',
+            'poster' => 'required|string',
+            'price' => 'required|numeric',
+            'website' => 'nullable|string',
+            'section_titles' => 'array',
+            'section_titles.*' => 'nullable|string',
+            'section_descriptions' => 'array',
+            'section_descriptions.*' => 'nullable|string',
+        ]);
+
         $game->update($request->only([
-            'title', 'genre', 'rating', 'class', 'developer_id', 'publisher_id'
+            'title', 'genre', 'class', 'developer_id', 'publisher_id', 'description', 'image', 'poster', 'price', 'website'
         ]));
 
         if ($request->has('platform_ids')) {
             $game->platforms()->sync($request->platform_ids);
         }
 
-        return $game->load(['developer', 'publisher', 'platforms']);
+        // Delete old sections
+        $game->sections()->delete();
+
+        // Recreate submitted sections
+        $sectionTitles = $request->input('section_titles', []);
+        $sectionDescs = $request->input('section_descriptions', []);
+
+        foreach ($sectionTitles as $i => $title) {
+            if ($title || ($sectionDescs[$i] ?? null)) {
+                $game->sections()->create([
+                    'title' => $title,
+                    'description' => $sectionDescs[$i] ?? '',
+                ]);
+            }
+        }
+
+        return $game->load(['developer', 'publisher', 'platforms', 'sections']);
     }
 
     /**

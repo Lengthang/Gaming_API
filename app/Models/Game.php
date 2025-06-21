@@ -11,9 +11,13 @@ class Game extends Model
 
     protected $fillable = [
         'title',
+        'description',     
+        'image',           
+        'poster',          
+        'price',           
         'genre',
-        'rating',
         'class',
+        'website',
         'developer_id',
         'publisher_id',
     ];
@@ -29,5 +33,11 @@ class Game extends Model
     public function platforms() {
         return $this->belongsToMany(Platform::class);
     }
+
+    public function sections()
+    {
+        return $this->hasMany(GameSection::class);
+    }
+
 
 }
